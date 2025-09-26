@@ -316,6 +316,11 @@ export async function loadPyodide(
   if (typeof _createPyodideModule !== "function") {
     const scriptSrc = `${config.indexURL}pyodide.asm.js`;
     await loadScript(scriptSrc);
+    // Check if module was exported to globalThis (fallback mechanism)
+    if (typeof _createPyodideModule !== "function" && typeof (globalThis as any)._createPyodideModule === "function") {
+      // @ts-ignore
+      _createPyodideModule = (globalThis as any)._createPyodideModule;
+    }
   }
 
   let snapshot: Uint8Array | undefined = undefined;

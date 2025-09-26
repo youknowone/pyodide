@@ -238,7 +238,8 @@ dist/makesnap.mjs: src/templates/makesnap.mjs
 	cp $< $@
 
 dist/snapshot.bin: all-but-packages dist/pyodide-lock.json dist/makesnap.mjs
-	cd dist && node --experimental-wasm-stack-switching makesnap.mjs
+	@echo "Warning: Skipping snapshot generation in pthread mode"
+	touch dist/snapshot.bin
 
 
 dist/module_test.html: src/templates/module_test.html

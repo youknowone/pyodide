@@ -139,6 +139,8 @@ export CFLAGS_BASE=\
 	-fPIC \
 	-fwasm-exceptions \
 	-sSUPPORT_LONGJMP \
+	-pthread \
+	-sUSE_PTHREADS=1 \
 	$(EXTRA_CFLAGS)
 
 
@@ -150,6 +152,9 @@ export LDFLAGS_BASE=\
 	-s WASM_BIGINT \
 	-fwasm-exceptions \
 	-sSUPPORT_LONGJMP \
+	-pthread \
+	-sUSE_PTHREADS=1 \
+	-sPTHREAD_POOL_SIZE=4 \
 	$(EXTRA_LDFLAGS) \
 
 export CXXFLAGS_BASE=
@@ -159,6 +164,7 @@ export CXXFLAGS_BASE=
 export MAIN_MODULE_LDFLAGS= $(LDFLAGS_BASE) \
 	-s ENVIRONMENT=web,webview,worker,node,shell \
 	-s MAIN_MODULE=1 \
+	--post-js=$(PYODIDE_ROOT)/src/js/pthread-node-worker.js \
 	-s MODULARIZE=1 \
 	-s LZ4=1 \
 	-s EXPORT_ES6=$(PYODIDE_ES6) \
@@ -297,6 +303,7 @@ ifeq ($(DISABLE_DYLINK), 1)
 		-sWASM_BIGINT \
 		-sEXPORTED_FUNCTIONS='$(EXPORTS)'\
 		-sERROR_ON_UNDEFINED_SYMBOLS=0 \
+		--post-js=$(PYODIDE_ROOT)/src/js/pthread-node-worker.js \
 		-lpython$(PYMAJOR).$(PYMINOR)$(CPYTHON_ABI_FLAGS) \
 		-lffi \
 		-lhiwire \

@@ -27,10 +27,10 @@ build:
       "Modules/_sqlite/util.c"
     )
 
-    embuilder build sqlite3 --pic
+    EMCC_CFLAGS="-pthread -matomics -mbulk-memory" embuilder build sqlite3 --pic
 
     for file in "${FILES[@]}"; do
-      emcc $STDLIB_MODULE_CFLAGS -c "${file}" -o "${file/.c/.o}"  \
+      emcc $STDLIB_MODULE_CFLAGS -matomics -mbulk-memory -c "${file}" -o "${file/.c/.o}"  \
         -sUSE_SQLITE3 -DMODULENAME=sqlite
     done
 

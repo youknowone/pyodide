@@ -238,7 +238,20 @@ API.makeSnapshot = function (serializer?: (obj: any) => any): Uint8Array {
   uint32View[2] = jsonLength!;
   uint32View[3] = 0; // padding
   encodeBuildId(API.config.BUILD_ID, uint32View.subarray(4, 4 + 8));
-  snapshot.subarray(snapshotOffset).set(Module.HEAP8);
+
+  // Handle SharedArrayBuffer case (pthread mode)
+  const heap = Module.HEAP8;
+  if (heap.buffer instanceof SharedArrayBuffer) {
+    // SharedArrayBuffer cannot be directly copied, need to create a copy
+    const tempBuffer = new ArrayBuffer(heap.length);
+    const tempView = new Uint8Array(tempBuffer);
+    tempView.set(heap);
+    snapshot.subarray(snapshotOffset).set(tempView);
+  } else {
+    // Regular ArrayBuffer, can copy directly
+    snapshot.subarray(snapshotOffset).set(heap);
+  }
+
   return snapshot;
 };
 
