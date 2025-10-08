@@ -255,7 +255,7 @@ dist/console.html: src/templates/console.html
 .PHONY: dist/console-v2.html
 dist/console-v2.html: src/templates/console-v2.html
 	cp $< $@
-	sed -i -e 's#{{ PYODIDE_BASE_URL }}#$(PYODIDE_BASE_URL)#g' $@
+	$(SED) -i -e 's#{{ PYODIDE_BASE_URL }}#$(PYODIDE_BASE_URL)#g' $@
 
 
 # Prepare the dist directory for the release by removing unneeded files
